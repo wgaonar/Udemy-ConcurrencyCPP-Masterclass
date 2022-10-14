@@ -75,7 +75,12 @@
     "filesystem": "cpp",
     "list": "cpp",
     "numeric": "cpp",
-    "queue": "cpp"
+    "queue": "cpp",
+    "condition_variable": "cpp",
+    "coroutine": "cpp",
+    "future": "cpp",
+    "random": "cpp",
+    "thread": "cpp"
   },
   "cSpell.words": [
     "modifiability",

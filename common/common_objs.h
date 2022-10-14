@@ -4,14 +4,17 @@
 #include <vector>
 #include <thread>
 
-class thread_guard {
-
+class thread_guard 
+{
+private:
 	std::thread& t;
 
 public:
+  // Constructor
 	explicit thread_guard(std::thread& _t) : t(_t)
 	{}
 
+  // Destructor
 	~thread_guard()
 	{
 		if (t.joinable())
@@ -20,8 +23,11 @@ public:
 		}
 	}
 
-	thread_guard(thread_guard& const) = delete;
-	thread_guard& operator= (thread_guard& const) = delete;
+  // Delete the copy constructor to avoid copying this object
+	thread_guard(const thread_guard&) = delete;
+
+  // Delete the assignment operator to avoid assign this object to another
+	thread_guard& operator= (const thread_guard&) = delete;
 };
 
 class join_threads {

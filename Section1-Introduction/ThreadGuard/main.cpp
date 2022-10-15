@@ -34,7 +34,7 @@ int main()
     std::cerr << e.what() << '\n';
   }
 
-  // NOTE: The main thread does NOT have to wait for th foo_thread to finish
+  // NOTE: The main thread does NOT have to wait for the foo_thread to finish
   // due to the thread_guard object
 	std::cout << "Bye from main thread \n";
 }

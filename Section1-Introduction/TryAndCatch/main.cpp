@@ -2,9 +2,9 @@
 #include <thread>
 #include <chrono>
 
-void foo()
+void func_1()
 {
-	std::cout << "Hello from foo - Waiting 5 seconds \n";
+	std::cout << "Hello from func_1 - Waiting 5 seconds \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 }
 
@@ -16,31 +16,28 @@ void other_operations()
   throw std::runtime_error("This is a runtime error");
 }
 
-
 int main()
 {
 	std::cout << "Hello from main thread \n";
-
-	std::thread foo_thread(foo);
+	
+  std::thread thread_1(func_1);
 	
   /*
-    // Exception from the runtime_error in the function
-    other_operations();
-    foo_thread.join();
-    std::cout << "This is after foo_thread join \n"; 
+    // Exception will be launched from the runtime_error 
+    in the function: other_operations(). We need to use Try and Catch
   */
 
   try
   {
     other_operations(); 
-    foo_thread.join();  // In the try and catch blocks
-    std::cout << "This is after foo_thread join \n"; 
+    thread_1.join();  // In the try block in case of NO exception
+    std::cout << "This is after thread_1 join \n"; 
   }
   catch(const std::exception& e)
   {
-    foo_thread.join();  // In the try and catch blocks
-    std::cout << "This is after foo_thread join \n"; 
-    std::cerr << e.what() << '\n';
+    std::cerr << e.what() << " - Starting to terminate processes...\n";
+    thread_1.join();  // In the catch block in case of exception
+    std::cout << "Processes has been terminated!!! \n"; 
   }
   
 	std::cout << "Bye from main thread \n";

@@ -3,9 +3,9 @@
 #include <chrono>
 #include "../../common/common_objs.h"
 
-void foo()
+void func_1()
 {
-	std::cout << "Hello from foo - Waiting 5 seconds \n";
+	std::cout << "Hello from func_1 - Waiting 5 seconds \n";
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 }
 
@@ -22,8 +22,8 @@ int main()
 {
 	std::cout << "Hello from main thread \n";
 
-	std::thread foo_thread(foo);
-	thread_guard tg(foo_thread);  
+	std::thread thread_1(func_1);
+	thread_guard tg(thread_1);  
   
   try
   {
@@ -34,7 +34,7 @@ int main()
     std::cerr << e.what() << '\n';
   }
 
-  // NOTE: The main thread does NOT have to wait for the foo_thread to finish
+  // NOTE: The main thread does NOT have to wait for the thread_1 to finish
   // due to the thread_guard object
 	std::cout << "Bye from main thread \n";
 }

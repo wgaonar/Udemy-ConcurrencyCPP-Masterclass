@@ -1,3 +1,4 @@
+// Using std::accumulate() function
 #include <iostream>
 #include <thread>
 

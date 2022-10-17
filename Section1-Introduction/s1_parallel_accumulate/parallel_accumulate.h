@@ -29,13 +29,13 @@ void parallel_accumulate(iterator start, iterator end, T& ref)
 	unsigned allowed_threads = std::min(allowed_threads_by_elements,
 		allowed_threads_by_hardware);
 
-	//caculating the block size 
+	//calculating the block size 
 	unsigned block_size = (distance + 1) / allowed_threads;
 
 	std::vector<T> results(allowed_threads);
 	std::vector<std::thread> threads(allowed_threads - 1);
 
-	//iterate and craeting new threads to calculate sum for each blocks
+	//iterate and creating new threads to calculate sum for each blocks
 	iterator last;
 	for (unsigned i = 0; i < allowed_threads - 1; i++)
 	{
@@ -50,7 +50,7 @@ void parallel_accumulate(iterator start, iterator end, T& ref)
 	results[allowed_threads - 1] =
 		std::accumulate(start, end, results[allowed_threads - 1]);
 
-	//calling join on the newly craeted threads
+	//calling join on the newly created threads
 	for_each(threads.begin(), threads.end(), std::mem_fn(&std::thread::join));
 	ref = std::accumulate(results.begin(), results.end(), ref);
 }

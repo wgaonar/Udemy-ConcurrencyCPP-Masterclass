@@ -26,7 +26,7 @@ void func_1()
 {
   int x = 0;
   std::thread thread_2(func_2, std::ref(x));
-  thread_2.detach(); // Thread_1 exiting without waiting for thread 2
+  thread_2.detach(); // Thread_1 can finish without waiting for thread 2
 
   std::this_thread::sleep_for(std::chrono::milliseconds(5000));
   std::cout << "Thread_1 has finished!!! \n";
@@ -38,7 +38,7 @@ int main()
 	std::cout << "Hello from main thread \n";
 	
   std::thread thread_1(func_1);
-  thread_1.join();
+  thread_1.join();  // Wait for thread_1
   
 	std::cout << "Bye from main thread \n";
 }

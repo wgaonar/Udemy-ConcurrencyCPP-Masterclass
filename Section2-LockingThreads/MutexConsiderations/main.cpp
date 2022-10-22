@@ -4,12 +4,14 @@
 #include <thread>
 
 /*********************** example 1 *********************/
-class list_wrapper {
+class list_wrapper 
+{
+private:
 	std::list<int> my_list;
 	std::mutex m;
 
 public:
-	void add_to_list(int const& x)
+	void add_to_list(const int& x)
 	{
 		std::lock_guard<std::mutex> lg(m);
 		my_list.push_front(x);
@@ -29,8 +31,8 @@ public:
 };
 
 /*********************** example 2 *********************/
-class data_object {
-
+class data_object 
+{
 public:
 	void some_operation()
 	{
@@ -38,8 +40,9 @@ public:
 	}
 };
 
-class data_wrapper {
-
+class data_wrapper 
+{
+private:
 	data_object protected_data;
 	std::mutex m;
 
@@ -54,19 +57,13 @@ public:
 
 data_object* unprotected_data;
 
-void malisious_function(data_object& data)
+void malicious_function(data_object& data)
 {
 	unprotected_data = &data;
 }
 
-void run_code()
-{
-	data_wrapper wrapper;
-	wrapper.do_some_work(malisious_function);
-}
-
-
 int main()
 {
-	run_code();
+	data_wrapper wrapper;
+	wrapper.do_some_work(malicious_function);
 }

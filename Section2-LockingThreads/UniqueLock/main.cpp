@@ -5,18 +5,38 @@
 
 
 /***************************************************Example 1 ******************************************/
-class bank_account {
+class bank_account 
+{
+// Friend function to overload insertion operator "<<"
+friend std::ostream &operator<<(std::ostream &os, const bank_account &rhs);
+
+private:
+  static constexpr const char *def_name = "Unnamed Account";
+  static constexpr double def_balance = 0.0;
+
 	double balance;
 	std::string name;
 	std::mutex m;
 
 public:
-	bank_account() {};
+  // Delegate constructor which overload the default constructor
+	bank_account(double _balance = def_balance, std::string _name = def_name) : balance(_balance), name(_name) {}
 
-	bank_account(double _balance, std::string _name) :balance(_balance), name(_name) {}
+  // Don`t let copy constructor
+	bank_account(const bank_account& ) = delete;
 
-	bank_account(bank_account& const) = delete;
-	bank_account& operator=(bank_account& const) = delete;
+  // Don`t let assignment operator
+	bank_account& operator=(const bank_account&) = delete;
+
+    double get_balance() const
+  {
+    return balance;
+  }
+
+  std::string get_name() const
+  {
+    return name;
+  }
 
 	void withdraw(double amount)
 	{
@@ -24,7 +44,7 @@ public:
 		balance += amount;
 	}
 
-	void deposite(double amount)
+	void deposit(double amount)
 	{
 		std::lock_guard<std::mutex> lg(m);
 		balance += amount;
@@ -32,9 +52,9 @@ public:
 
 	void transfer(bank_account& from, bank_account& to, double amount)
 	{
+		std::cout << std::this_thread::get_id() << " Hold the lock for both mutex \n";
 
-		std::cout << std::this_thread::get_id() << " hold the lock for both mutex \n";
-
+    // Using unique_lock to avoid the dead lock problem
 		std::unique_lock<std::mutex> ul_1(from.m, std::defer_lock);
 		std::unique_lock<std::mutex> ul_2(to.m, std::defer_lock);
 		std::lock(ul_1, ul_2);
@@ -49,15 +69,23 @@ void run_code1()
 {
 
 	bank_account account;
-
-	bank_account account_1(1000, "james");
+	bank_account account_1(1000, "James");
 	bank_account account_2(2000, "Mathew");
+
+  // Balance before the transfer
+  std::cout << account << std::endl;
+  std::cout << account_1 << std::endl;
+  std::cout << account_2 << std::endl;
 
 	std::thread thread_1(&bank_account::transfer, &account, std::ref(account_1), std::ref(account_2), 500);
 	std::thread thread_2(&bank_account::transfer, &account, std::ref(account_2), std::ref(account_1), 200);
 
 	thread_1.join();
 	thread_2.join();
+
+  // Balance after the transfer
+  std::cout << account_1 << std::endl;
+  std::cout << account_2 << std::endl;
 }
 
 

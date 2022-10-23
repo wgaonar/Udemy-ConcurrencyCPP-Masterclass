@@ -54,7 +54,7 @@ public:
 	{
 		std::cout << "The Thread: " << std::this_thread::get_id() << " Hold the lock for both mutex \n";
 
-    // Using unique_lock to avoid the dead lock problem
+    // Using unique_lock and std::defer_lock to avoid the dead lock problem
 		std::unique_lock<std::mutex> ul_1(from.m, std::defer_lock);
 		std::unique_lock<std::mutex> ul_2(to.m, std::defer_lock);
 		std::lock(ul_1, ul_2);

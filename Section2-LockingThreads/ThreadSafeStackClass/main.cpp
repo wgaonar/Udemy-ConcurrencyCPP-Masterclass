@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 
-/*********************** Stack Class Example 1 *******************/
+/*********************** Trivial Thread Safe Class *******************/
 template<typename T>
 class trivial_thread_safe_stack 
 {
@@ -46,7 +46,7 @@ public:
 	}
 };
 
-/*********************** Stack Class Example 2 *******************/
+/*********************** Thread Safe Class *******************/
 template<typename T>
 class thread_safe_stack 
 {

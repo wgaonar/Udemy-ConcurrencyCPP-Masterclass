@@ -32,7 +32,7 @@ int main()
 		substract, x, y);
 
 	f1.get();
-	std::cout << "value recieved using f2 future -" << f2.get() << std::endl;
-	std::cout << "value recieved using f2 future -" << f3.get() << std::endl;
+	std::cout << "value received using f2 future -" << f2.get() << std::endl;
+	std::cout << "value received using f2 future -" << f3.get() << std::endl;
 
 }

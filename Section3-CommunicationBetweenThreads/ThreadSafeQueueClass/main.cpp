@@ -6,25 +6,28 @@
 #include <thread>
 
 template<typename T>
-class thread_safe_queue {
+class thread_safe_queue 
+{
+private:
+	std::queue<std::shared_ptr<T>> queue;
 	std::mutex m;
 	std::condition_variable cv;
-	std::queue<std::shared_ptr<T>> queue;
 
 public:
-	thread_safe_queue()
-	{}
+  // Default constructor
+	thread_safe_queue() {}
 
+  // Copy constructor
 	thread_safe_queue(thread_safe_queue const& other_queue)
 	{
 		std::lock_guard<std::mutex> lg(other_queue.m);
 		queue = other_queue.queue;
 	}
 
-	void push(T& value)
+	void push(T& element)
 	{
 		std::lock_guard<std::mutex> lg(m);
-		queue.push(std::make_shared<T>(value));
+		queue.push(std::make_shared<T>(element));
 		cv.notify_one();
 	}
 
@@ -35,38 +38,36 @@ public:
 		{
 			return std::shared_ptr<T>();
 		}
-		else
-		{
-			std::shared_ptr<T> ref(queue.front());
-			queue.pop();
-			return ref;
-		}
+    
+    std::shared_ptr<T> ref(queue.front());
+    queue.pop();
+    return ref;
 	}
 
-	bool empty()
+  bool pop(T& ref)
 	{
 		std::lock_guard<std::mutex> lg(m);
-		return queue.empty();
+		if (queue.empty())
+		{
+			return false;
+		}
+
+    ref = queue.front();
+    queue.pop();
+    return true;
+
 	}
 
 	std::shared_ptr<T> wait_pop()
 	{
 		std::unique_lock<std::mutex> lg(m);
-		cv.wait(lg, [this] {
-			return !queue.empty();
-			});
+		cv.wait(lg, [this] () { return !queue.empty(); });
 		std::shared_ptr<T> ref = queue.front();
 		queue.pop();
 		return ref;
 	}
 
-	size_t size()
-	{
-		std::lock_guard<std::mutex> lg(m);
-		return queue.size();
-	}
-
-	bool wait_pop(T& ref)
+  bool wait_pop(T& ref)
 	{
 		std::unique_lock<std::mutex> lg(m);
 		cv.wait(lg, [this] {
@@ -78,19 +79,16 @@ public:
 		return true;
 	}
 
-	bool pop(T& ref)
+	bool empty()
 	{
 		std::lock_guard<std::mutex> lg(m);
-		if (queue.empty())
-		{
-			return false;
-		}
-		else
-		{
-			ref = queue.front();
-			queue.pop();
-			return true;
-		}
+		return queue.empty();
+	}
+
+	size_t size()
+	{
+		std::lock_guard<std::mutex> lg(m);
+		return queue.size();
 	}
 };
 
@@ -101,7 +99,6 @@ void func_1()
 	int value;
 	queue.wait_pop(value);
 	std::cout << value << std::endl;
-
 }
 
 void func_2()

@@ -66,7 +66,7 @@ public:
 		std::lock_guard<std::mutex> lg(m);
 		if (stk.empty())
 		{
-			throw std::runtime_error("stack is empty");
+			throw std::runtime_error("Stack is empty");
 		}
 
 		std::shared_ptr<T> res(stk.top());

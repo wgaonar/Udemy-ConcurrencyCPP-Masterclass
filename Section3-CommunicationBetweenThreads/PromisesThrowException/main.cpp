@@ -1,14 +1,10 @@
 #include <iostream>       
 #include <thread>         
 #include <future>         
+#include <cmath>         
 #include <stdexcept>   
 
-void throw_exception()
-{
-	throw  std::invalid_argument("input cannot be negative");
-}
-
-void calculate_squre_root(std::promise<int>& prom)
+void calculate_square_root(std::promise<int>& prom)
 {
 	int x = 1;
 	std::cout << "Please, enter an integer value: ";
@@ -17,7 +13,7 @@ void calculate_squre_root(std::promise<int>& prom)
 		std::cin >> x;
 		if (x < 0)
 		{
-			throw_exception();
+			throw std::invalid_argument("Input cannot be negative");
 		}
 		prom.set_value(std::sqrt(x));
 	}
@@ -40,11 +36,17 @@ void print_result(std::future<int>& fut) {
 
 int main()
 {
+  // Declare the promise object
 	std::promise<int> prom;
+
+  // Assign a future object to the future value of the promise object
 	std::future<int> fut = prom.get_future();
 
+  // Start the thread to wait and print the value that will be set in the future
 	std::thread printing_thread(print_result, std::ref(fut));
-	std::thread calculation_thread(calculate_squre_root, std::ref(prom));
+
+  // Start the thread to set the value
+	std::thread calculation_thread(calculate_square_root, std::ref(prom));
 
 	printing_thread.join();
 	calculation_thread.join();

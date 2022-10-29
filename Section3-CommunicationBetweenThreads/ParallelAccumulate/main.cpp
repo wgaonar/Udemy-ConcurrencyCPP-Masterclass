@@ -1,3 +1,5 @@
+// Parallel Accumulative Algorithm using future objects
+
 #include <iostream>
 #include <future>
 #include <numeric>
